@@ -52,8 +52,8 @@ TIR_files = TIR_df['MACS'][idx]
 
 #removing the unzipped shapefile
 shapetiles = np.array([shapezipfile[:-4]+'.cpg',shapezipfile[:-4]+'.dbf',shapezipfile[:-4]+'.qmd',shapezipfile[:-4]+'.prj',shapezipfile[:-4]+'.shp',shapezipfile[:-4]+'.shx'])
-for i in np.arange(len(shapetiles)):
-	os.remove(shapetiles[i])
+for shapetile in shapetiles:
+	os.remove(shapetile)
 
 selected_macsfiles = []
 for index, row in RGB_df.iterrows():
