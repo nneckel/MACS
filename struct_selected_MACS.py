@@ -19,18 +19,6 @@ def read_attribute(shapefile,row):
 		attributelist.append(attribute)
 	return attributelist
 
-def zip_to_df(path):
-    '''
-    Reads one .txt file from .zip to pandas DataFrame
-    '''
-    import zipfile
-    with zipfile.ZipFile(path, 'r') as zip_ref:
-        for file_name in zip_ref.namelist():
-            if file_name.endswith('.txt'):
-                zip_ref.read(file_name)
-                df = pd.read_csv(zip_ref.open(file_name,'r'), sep=' ')
-    return df
-
 shapezipfile = sys.argv[1]
 exposureval = 100
 
@@ -44,6 +32,7 @@ TIR_df = pd.read_csv(TIRfile, sep=";", dtype={"MACS": str, "date": str, "time": 
 TIR_df['time'] = pd.to_datetime(TIR_df['time']).dt.time
 TIR_df = TIR_df.sort_values(by='time').reset_index(drop=True)
 
+#unpacking the zipped shapefile
 with zipfile.ZipFile(shapezipfile, 'r') as zip_ref:
 	zip_ref.extractall()
 
@@ -61,6 +50,7 @@ NIR_files = NIR_df['MACS'][idx]
 idx = TIR_df['time'].searchsorted(RGB_df['macsRGBtime'])
 TIR_files = TIR_df['MACS'][idx]
 
+#removing the unzipped shapefile
 shapetiles = np.array([shapezipfile[:-4]+'.cpg',shapezipfile[:-4]+'.dbf',shapezipfile[:-4]+'.qmd',shapezipfile[:-4]+'.prj',shapezipfile[:-4]+'.shp',shapezipfile[:-4]+'.shx'])
 for i in np.arange(len(shapetiles)):
 	os.remove(shapetiles[i])
